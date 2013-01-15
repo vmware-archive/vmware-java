@@ -1,0 +1,8 @@
+name 'vmware-java'
+version '0.0.1'
+source  'https://github.com/vmop/vmware-java'
+author  'geauxvirtual'
+license 'Apache License 2.0'
+summary 'Java Module'
+description 'Java Module for Puppet'
+project_page 'https://github.com/vmop/vmware-java'
