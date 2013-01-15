@@ -28,7 +28,7 @@
 #
 #		  class { 'java':
 #		    version    => '1.7.0_11',
-#           source     => 'http://repo.vmwop.local/java'
+#           source     => 'http://repo.vmwop.local/java',
 #           source_rpm => 'jre-7u11-linux-x64.rpm'
 #	      }
 #
@@ -36,7 +36,7 @@
 class java (
     $version    = $java::params::version,
     $source     = $java::params::source,
-    $source_rpm = $java::params::source_rpm,
+    $source_rpm = $java::params::source_rpm
 ) inherits java::params {
 
   package { "jre-$version":
@@ -48,7 +48,7 @@ class java (
   exec { 'alternatives --install /usr/bin/java java /usr/java/latest/bin/java 30000':
     path        => '/bin:/usr/bin:/usr/sbin',
     subscribe   => Package["jre-$version"],
-    refreshonly => true
+    refreshonly => true,
   }
 
 }
