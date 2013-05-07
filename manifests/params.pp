@@ -11,7 +11,7 @@
 #
 #
 class java::params {
-  $version    = '1.7.0_11'
+  $version    = '1.7.0_21'
   $source     = 'http://repo.vmop.local/java'
-  $source_rpm = 'jre-7u11-linux-x64.rpm'
+  $source_rpm = 'jre-7u21-linux-x64.rpm'
 }
