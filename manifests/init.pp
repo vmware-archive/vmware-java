@@ -20,26 +20,25 @@
 # Sample Usage:
 #
 # For a standard install using the latest Rubygems provided by rubygems-update on Redhat
-#		use:
+# use:
 #
-#		  include ::java
+#     include ::java
 #
-#		To install a specific version of jruby
+# To install a specific version of jruby
 #
-#		  class { 'java':
-#		    version    => '1.7.0_11',
-#           source     => 'http://repo.vmwop.local/java',
-#           source_rpm => 'jre-7u11-linux-x64.rpm'
-#	      }
-#
+#     class { 'java':
+#       version    => '1.7.0_11',
+#       source     => 'http://repo.vmwop.local/java',
+#       source_rpm => 'jre-7u11-linux-x64.rpm'
+#     }
 #
 class java (
-    $version    = $java::params::version,
-    $source     = $java::params::source,
-    $source_rpm = $java::params::source_rpm
+  $version    = $java::params::version,
+  $source     = $java::params::source,
+  $source_rpm = $java::params::source_rpm
 ) inherits java::params {
 
-  package { "jre-$version":
+  package { "jre-${version}":
     ensure   => present,
     provider => rpm,
     source   => "${source}/${source_rpm}",
@@ -47,7 +46,7 @@ class java (
 
   exec { 'alternatives --install /usr/bin/java java /usr/java/latest/bin/java 30000':
     path        => '/bin:/usr/bin:/usr/sbin',
-    subscribe   => Package["jre-$version"],
+    subscribe   => Package["jre-${version}"],
     refreshonly => true,
   }
 
