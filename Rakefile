@@ -1,6 +1,15 @@
 require 'rubygems'
 require 'puppetlabs_spec_helper/rake_tasks'
 
+def io_popen(command)
+  IO.popen(command) do |io|
+    io.each do |line|
+      print line
+      yield line if block_given?
+    end
+  end
+end
+
 # Customize lint option
 task :lint do
   PuppetLint.configuration.send("disable_80chars")
@@ -8,14 +17,22 @@ task :lint do
 end
 
 # Initialize vagrant instance for testing
-task :vagrant do
+desc "Powers on Vagrant VMs with specific manifests"
+task :vagrant, :manifest do |t, args|
   Rake::Task["spec_prep"].execute
-  IO.popen('vagrant up --provider=vmware_fusion') do |io|
-    io.each{ |line| print line }
+
+  prefix = "VAGRANT_MANIFEST='#{args[:manifest]||'init.pp'}'"
+  puts prefix
+
+  provision = false
+  io_popen("export #{prefix}; vagrant up --provider=vmware_fusion") do |line|
+    provision = true if line =~ /Machine is already running./
   end
+  io_popen("export #{prefix}; vagrant provision") if provision
 end
 
 # Cleanup vagrant environment
+desc "Destroys Vagrant VMs and cleanup spec directory"
 task :vagrant_clean do
   `vagrant destroy`
   Rake::Task["spec_clean"].execute

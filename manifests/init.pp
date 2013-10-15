@@ -38,16 +38,27 @@ class java (
   $source_rpm = $java::params::source_rpm
 ) inherits java::params {
 
+  if 'http://download.oracle.com' in $source {
+    staging::file { $source_rpm:
+      source      => "${source}/${source_rpm}",
+      curl_option => '-b gpw_e24=http%3A%2F%2Fwww.oracle.com',
+      before      => Package["jre-${version}"],
+    }
+
+    $pkg_source = "/opt/staging/java/${source_rpm}"
+  } else {
+    $pkg_source = "${source}/${source_rpm}"
+  }
+
   package { "jre-${version}":
     ensure   => present,
     provider => rpm,
-    source   => "${source}/${source_rpm}",
+    source   => $pkg_source,
   }
 
   exec { 'alternatives --install /usr/bin/java java /usr/java/latest/bin/java 30000':
-    path        => '/bin:/usr/bin:/usr/sbin',
-    subscribe   => Package["jre-${version}"],
+    path        => $::path,
     refreshonly => true,
+    subscribe   => Package["jre-${version}"],
   }
-
 }

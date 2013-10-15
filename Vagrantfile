@@ -10,8 +10,8 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "./", "/etc/puppet/modules/java"
 
   config.vm.define :java do |m|
-    m.vm.box = "centos63"
-    m.vm.box_url = "https://dl.dropbox.com/s/eqdrqnla4na8qax/centos63.box"
+    m.vm.box = "centos64"
+    m.vm.box_url = "https://dl.dropboxusercontent.com/u/1075709/box/centos64.box"
 
     m.vm.hostname = 'test'
     m.vm.provider :vmware_fusion do |v|
@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
     m.vm.provision :puppet do |puppet|
       puppet.manifests_path = "tests"
       puppet.module_path    = "spec/fixtures/modules/"
-      puppet.manifest_file  = "init.pp"
+      puppet.manifest_file  = ENV['VAGRANT_MANIFEST'] || "init.pp"
     end
   end
 end

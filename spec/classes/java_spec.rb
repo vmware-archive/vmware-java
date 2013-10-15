@@ -3,22 +3,28 @@ require 'spec_helper'
 describe 'java' do
   context 'default' do
     it do
-      should contain_package('jre-1.7.0_21').
-        with_source('http://repo.vmop.local/java/jre-7u21-linux-x64.rpm')
+      should contain_staging__file('jre-7u45-linux-x64.rpm').with({
+        :source => 'http://download.oracle.com/otn-pub/java/jdk/7u45-b18/jre-7u45-linux-x64.rpm',
+        :before => 'Package[jre-1.7.0_45]',
+      })
+
+      should contain_package('jre-1.7.0_45').
+        with_source('/opt/staging/java/jre-7u45-linux-x64.rpm')
 
       should contain_exec('alternatives --install /usr/bin/java java /usr/java/latest/bin/java 30000')
     end
   end
 
-  context 'alternate source and package name' do
+  context 'alternate non Oracle source' do
     let(:params){{
-      :source => '/opt/staging',
-      :source_rpm => 'jre-7u24-linux.rpm',
+      :source => 'https://dl.dropboxusercontent.com/u/1075709',
     }}
 
     it do
-      should contain_package('jre-1.7.0_21').
-        with_source('/opt/staging/jre-7u24-linux.rpm')
+      should_not contain_staging__file('jre-7u45-linux-x64.rpm')
+
+      should contain_package('jre-1.7.0_45').
+        with_source('https://dl.dropboxusercontent.com/u/1075709/jre-7u45-linux-x64.rpm')
 
       should contain_exec('alternatives --install /usr/bin/java java /usr/java/latest/bin/java 30000')
     end
